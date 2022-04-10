@@ -6,7 +6,7 @@ import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
-
+import "./tasks";
 dotenv.config();
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -23,12 +23,14 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 // Go to https://hardhat.org/config/ to learn more
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.4",
+  solidity: "0.8.11",
   networks: {
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    rinkeby: {
+      url: process.env.ALCHEMY_URL || "",
+      accounts: [
+        process.env.RINKEBY_PRIVATE_KEY_1 as string,
+        process.env.RINKEBY_PRIVATE_KEY_2 as string,
+      ],
     },
   },
   gasReporter: {
