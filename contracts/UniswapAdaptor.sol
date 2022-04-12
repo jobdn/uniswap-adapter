@@ -13,11 +13,7 @@ contract UniswapAdaptor {
         FACTORY_ADDRESS = _factory;
     }
 
-    function createPair(address _token0, address _token1)
-        public
-        returns (address pair)
-    {
+    function createPair(address _token0, address _token1) public {
         IUniswapV2Factory(FACTORY_ADDRESS).createPair(_token0, _token1);
-        pair = IUniswapV2Factory(FACTORY_ADDRESS).getPair(_token0, _token1);
     }
 }

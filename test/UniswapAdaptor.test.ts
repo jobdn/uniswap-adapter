@@ -1,5 +1,4 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-// import { expect } from "chai";
 import {
   IUniswapV2Factory,
   IUniswapV2Router02,
@@ -10,6 +9,7 @@ import {
 } from "../typechain-types";
 import { utils } from "ethers";
 import { ethers } from "hardhat";
+import { expect } from "chai";
 
 const toEther = (amount: number) => utils.parseEther(amount.toString());
 const getCurrentTime = async () =>
@@ -37,7 +37,6 @@ describe("UniswapAdaptor", () => {
         <string>process.env.FACTORY_ADDRESS
       )
     );
-    console.log(await ethers.provider.getCode(factory.address));
 
     router = <IUniswapV2Router02>(
       await ethers.getContractAt(
@@ -58,6 +57,10 @@ describe("UniswapAdaptor", () => {
     token1.approve(router.address, toEther(200));
   });
   describe("createPair", () => {
-    it("should be possible create pair", async () => {});
+    it("should be possible create pair", async () => {
+      await adaptor.createPair(token0.address, token1.address);
+      expect(await factory.getPair(token0.address, token1.address)).to.be
+        .properAddress;
+    });
   });
 });

@@ -25,6 +25,12 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 const config: HardhatUserConfig = {
   solidity: "0.8.11",
   networks: {
+    hardhat: {
+      forking: {
+        url: process.env.ALCHEMY_URL || "",
+        blockNumber: 10489710,
+      },
+    },
     rinkeby: {
       url: process.env.ALCHEMY_URL || "",
       accounts: [

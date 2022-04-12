@@ -22,13 +22,13 @@ export type { ERC165 } from "./@openzeppelin/contracts/utils/introspection/ERC16
 export { ERC165__factory } from "./factories/@openzeppelin/contracts/utils/introspection/ERC165__factory";
 export type { IERC165 } from "./@openzeppelin/contracts/utils/introspection/IERC165";
 export { IERC165__factory } from "./factories/@openzeppelin/contracts/utils/introspection/IERC165__factory";
+export type { IUniswapV2Factory } from "./@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory";
+export { IUniswapV2Factory__factory } from "./factories/@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory__factory";
 export type { IUniswapV2Router01 } from "./@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01";
 export { IUniswapV2Router01__factory } from "./factories/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01__factory";
 export type { IUniswapV2Router02 } from "./@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02";
 export { IUniswapV2Router02__factory } from "./factories/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02__factory";
 export type { Token } from "./contracts/test/Token";
 export { Token__factory } from "./factories/contracts/test/Token__factory";
-export type { IUniswapV2Factory } from "./contracts/UniswapAdaptor.sol/IUniswapV2Factory";
-export { IUniswapV2Factory__factory } from "./factories/contracts/UniswapAdaptor.sol/IUniswapV2Factory__factory";
-export type { UniswapAdaptor } from "./contracts/UniswapAdaptor.sol/UniswapAdaptor";
-export { UniswapAdaptor__factory } from "./factories/contracts/UniswapAdaptor.sol/UniswapAdaptor__factory";
+export type { UniswapAdaptor } from "./contracts/UniswapAdaptor";
+export { UniswapAdaptor__factory } from "./factories/contracts/UniswapAdaptor__factory";
