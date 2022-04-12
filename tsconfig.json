@@ -7,6 +7,6 @@
     "outDir": "dist",
     "declaration": true
   },
-  "include": ["./scripts", "./test", "./typechain"],
+  "include": ["./scripts", ".test/UniswapAdaptor.test.ts", "./typechain"],
   "files": ["./hardhat.config.ts"]
 }
