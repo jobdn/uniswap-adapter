@@ -109,4 +109,22 @@ contract UniswapAdaptor {
             _deadline
         );
     }
+
+    function swap(
+        uint256 _amountIn,
+        uint256 _amountOutMin,
+        address[] calldata _path,
+        address _to,
+        uint256 _deadline
+    ) public {
+        IERC20(_path[0]).safeTransferFrom(msg.sender, address(this), _amountIn);
+        IERC20(_path[0]).approve(ROUTER_ADDRESS, _amountIn);
+        IUniswapV2Router02(ROUTER_ADDRESS).swapExactTokensForTokens(
+            _amountIn,
+            _amountOutMin,
+            _path,
+            _to,
+            _deadline
+        );
+    }
 }

@@ -150,4 +150,16 @@ describe("UniswapAdaptor", () => {
       ).to.be.revertedWith("Adaptor: nonexistent pair");
     });
   });
+
+  describe("swap", () => {
+    it("should be possible swap token0 for token1", async () => {
+      await adaptor.swap(
+        utils.parseUnits("500", await token0.decimals()),
+        utils.parseUnits("50", await token0.decimals()),
+        [token0.address, token1.address],
+        signer.address,
+        (await getCurrentTime()) + 100
+      );
+    });
+  });
 });

@@ -29,6 +29,7 @@ export interface UniswapAdaptorInterface extends utils.Interface {
     "addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)": FunctionFragment;
     "createPair(address,address)": FunctionFragment;
     "removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)": FunctionFragment;
+    "swap(uint256,uint256,address[],address,uint256)": FunctionFragment;
   };
 
   getFunction(
@@ -38,6 +39,7 @@ export interface UniswapAdaptorInterface extends utils.Interface {
       | "addLiquidity"
       | "createPair"
       | "removeLiquidity"
+      | "swap"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -77,6 +79,10 @@ export interface UniswapAdaptorInterface extends utils.Interface {
       BigNumberish
     ]
   ): string;
+  encodeFunctionData(
+    functionFragment: "swap",
+    values: [BigNumberish, BigNumberish, string[], string, BigNumberish]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "FACTORY_ADDRESS",
@@ -95,6 +101,7 @@ export interface UniswapAdaptorInterface extends utils.Interface {
     functionFragment: "removeLiquidity",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "swap", data: BytesLike): Result;
 
   events: {};
 }
@@ -158,6 +165,15 @@ export interface UniswapAdaptor extends BaseContract {
       _deadline: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    swap(
+      _amountIn: BigNumberish,
+      _amountOutMin: BigNumberish,
+      _path: string[],
+      _to: string,
+      _deadline: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   FACTORY_ADDRESS(overrides?: CallOverrides): Promise<string>;
@@ -193,6 +209,15 @@ export interface UniswapAdaptor extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  swap(
+    _amountIn: BigNumberish,
+    _amountOutMin: BigNumberish,
+    _path: string[],
+    _to: string,
+    _deadline: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     FACTORY_ADDRESS(overrides?: CallOverrides): Promise<string>;
 
@@ -222,6 +247,15 @@ export interface UniswapAdaptor extends BaseContract {
       _liquidity: BigNumberish,
       _amountAMin: BigNumberish,
       _amountBMin: BigNumberish,
+      _to: string,
+      _deadline: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    swap(
+      _amountIn: BigNumberish,
+      _amountOutMin: BigNumberish,
+      _path: string[],
       _to: string,
       _deadline: BigNumberish,
       overrides?: CallOverrides
@@ -263,6 +297,15 @@ export interface UniswapAdaptor extends BaseContract {
       _deadline: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    swap(
+      _amountIn: BigNumberish,
+      _amountOutMin: BigNumberish,
+      _path: string[],
+      _to: string,
+      _deadline: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -294,6 +337,15 @@ export interface UniswapAdaptor extends BaseContract {
       _liquidity: BigNumberish,
       _amountAMin: BigNumberish,
       _amountBMin: BigNumberish,
+      _to: string,
+      _deadline: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    swap(
+      _amountIn: BigNumberish,
+      _amountOutMin: BigNumberish,
+      _path: string[],
       _to: string,
       _deadline: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
