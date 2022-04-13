@@ -28,6 +28,7 @@ export interface UniswapAdaptorInterface extends utils.Interface {
     "ROUTER_ADDRESS()": FunctionFragment;
     "addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)": FunctionFragment;
     "createPair(address,address)": FunctionFragment;
+    "removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)": FunctionFragment;
   };
 
   getFunction(
@@ -36,6 +37,7 @@ export interface UniswapAdaptorInterface extends utils.Interface {
       | "ROUTER_ADDRESS"
       | "addLiquidity"
       | "createPair"
+      | "removeLiquidity"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -63,6 +65,18 @@ export interface UniswapAdaptorInterface extends utils.Interface {
     functionFragment: "createPair",
     values: [string, string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "removeLiquidity",
+    values: [
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      string,
+      BigNumberish
+    ]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "FACTORY_ADDRESS",
@@ -77,6 +91,10 @@ export interface UniswapAdaptorInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "createPair", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "removeLiquidity",
+    data: BytesLike
+  ): Result;
 
   events: {};
 }
@@ -129,6 +147,17 @@ export interface UniswapAdaptor extends BaseContract {
       _token1: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    removeLiquidity(
+      _tokenA: string,
+      _tokenB: string,
+      _liquidity: BigNumberish,
+      _amountAMin: BigNumberish,
+      _amountBMin: BigNumberish,
+      _to: string,
+      _deadline: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   FACTORY_ADDRESS(overrides?: CallOverrides): Promise<string>;
@@ -153,6 +182,17 @@ export interface UniswapAdaptor extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  removeLiquidity(
+    _tokenA: string,
+    _tokenB: string,
+    _liquidity: BigNumberish,
+    _amountAMin: BigNumberish,
+    _amountBMin: BigNumberish,
+    _to: string,
+    _deadline: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     FACTORY_ADDRESS(overrides?: CallOverrides): Promise<string>;
 
@@ -173,6 +213,17 @@ export interface UniswapAdaptor extends BaseContract {
     createPair(
       _token0: string,
       _token1: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    removeLiquidity(
+      _tokenA: string,
+      _tokenB: string,
+      _liquidity: BigNumberish,
+      _amountAMin: BigNumberish,
+      _amountBMin: BigNumberish,
+      _to: string,
+      _deadline: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -201,6 +252,17 @@ export interface UniswapAdaptor extends BaseContract {
       _token1: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    removeLiquidity(
+      _tokenA: string,
+      _tokenB: string,
+      _liquidity: BigNumberish,
+      _amountAMin: BigNumberish,
+      _amountBMin: BigNumberish,
+      _to: string,
+      _deadline: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -223,6 +285,17 @@ export interface UniswapAdaptor extends BaseContract {
     createPair(
       _token0: string,
       _token1: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    removeLiquidity(
+      _tokenA: string,
+      _tokenB: string,
+      _liquidity: BigNumberish,
+      _amountAMin: BigNumberish,
+      _amountBMin: BigNumberish,
+      _to: string,
+      _deadline: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

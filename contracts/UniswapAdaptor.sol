@@ -39,6 +39,16 @@ contract UniswapAdaptor {
         IERC20(_tokenAddress).approve(ROUTER_ADDRESS, _tokenAmount);
     }
 
+    /// @notice Adds liquidity to the pool
+    /// @dev We need to prepare tokens to add liquidity {See _prepareForAddLiquidity}
+    /// @param _tokenA A pool token.
+    /// @param _tokenB B pool token.
+    /// @param _amountADesired The amount of tokenA to add as liquidity if the B/A price is <= amountBDesired/amountADesired (A depreciates).
+    /// @param _amountBDesired The amount of tokenA to add as liquidity if the A/B price is <= amountADesired/amountBDesired (B depreciates).
+    /// @param _amountAMin Bounds the extent to which the B/A price can go up before the transaction reverts. Must be <= amountADesired
+    /// @param _amountBMin Bounds the extent to which the A/B price can go up before the transaction reverts. Must be <= amountBDesired
+    /// @param _to Recipient of the liquidity tokens.
+    /// @param _deadline Unix timestamp after which the transaction will revert.
     function addLiquidity(
         address _tokenA,
         address _tokenB,
@@ -57,6 +67,42 @@ contract UniswapAdaptor {
             _tokenB,
             _amountADesired,
             _amountBDesired,
+            _amountAMin,
+            _amountBMin,
+            _to,
+            _deadline
+        );
+    }
+
+    /// @notice Removes liquidity from the pool
+    /// @dev User send lp-tokens to the adaptor. Adaptor is needed to approve the UniswapV2Router02 to spend lp-tokens
+    /// @param _tokenA A pool token.
+    /// @param _tokenB A pool token.
+    /// @param _liquidity The amount of liquidity tokens to remove.
+    /// @param _amountAMin 	The minimum amount of tokenA that must be received for the transaction not to revert.
+    /// @param _amountBMin The minimum amount of tokenB that must be received for the transaction not to revert.
+    /// @param _to Recipient of the underlying assets.
+    /// @param _deadline Unix timestamp after which the transaction will revert.
+    function removeLiquidity(
+        address _tokenA,
+        address _tokenB,
+        uint256 _liquidity,
+        uint256 _amountAMin,
+        uint256 _amountBMin,
+        address _to,
+        uint256 _deadline
+    ) public {
+        address pair = IUniswapV2Factory(FACTORY_ADDRESS).getPair(
+            _tokenA,
+            _tokenB
+        );
+        require(pair != address(0), "Adaptor: nonexistent pair");
+        IERC20(pair).approve(ROUTER_ADDRESS, _liquidity);
+        IERC20(pair).safeTransferFrom(msg.sender, address(this), _liquidity);
+        IUniswapV2Router02(ROUTER_ADDRESS).removeLiquidity(
+            _tokenA,
+            _tokenB,
+            _liquidity,
             _amountAMin,
             _amountBMin,
             _to,
