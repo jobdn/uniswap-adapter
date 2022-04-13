@@ -4,6 +4,7 @@
 import type {
   BaseContract,
   BigNumber,
+  BigNumberish,
   BytesLike,
   CallOverrides,
   ContractTransaction,
@@ -25,11 +26,16 @@ export interface UniswapAdaptorInterface extends utils.Interface {
   functions: {
     "FACTORY_ADDRESS()": FunctionFragment;
     "ROUTER_ADDRESS()": FunctionFragment;
+    "addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)": FunctionFragment;
     "createPair(address,address)": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: "FACTORY_ADDRESS" | "ROUTER_ADDRESS" | "createPair"
+    nameOrSignatureOrTopic:
+      | "FACTORY_ADDRESS"
+      | "ROUTER_ADDRESS"
+      | "addLiquidity"
+      | "createPair"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -39,6 +45,19 @@ export interface UniswapAdaptorInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "ROUTER_ADDRESS",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addLiquidity",
+    values: [
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      string,
+      BigNumberish
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "createPair",
@@ -51,6 +70,10 @@ export interface UniswapAdaptorInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "ROUTER_ADDRESS",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "addLiquidity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "createPair", data: BytesLike): Result;
@@ -89,6 +112,18 @@ export interface UniswapAdaptor extends BaseContract {
 
     ROUTER_ADDRESS(overrides?: CallOverrides): Promise<[string]>;
 
+    addLiquidity(
+      _tokenA: string,
+      _tokenB: string,
+      _amountADesired: BigNumberish,
+      _amountBDesired: BigNumberish,
+      _amountAMin: BigNumberish,
+      _amountBMin: BigNumberish,
+      _to: string,
+      _deadline: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     createPair(
       _token0: string,
       _token1: string,
@@ -100,6 +135,18 @@ export interface UniswapAdaptor extends BaseContract {
 
   ROUTER_ADDRESS(overrides?: CallOverrides): Promise<string>;
 
+  addLiquidity(
+    _tokenA: string,
+    _tokenB: string,
+    _amountADesired: BigNumberish,
+    _amountBDesired: BigNumberish,
+    _amountAMin: BigNumberish,
+    _amountBMin: BigNumberish,
+    _to: string,
+    _deadline: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   createPair(
     _token0: string,
     _token1: string,
@@ -110,6 +157,18 @@ export interface UniswapAdaptor extends BaseContract {
     FACTORY_ADDRESS(overrides?: CallOverrides): Promise<string>;
 
     ROUTER_ADDRESS(overrides?: CallOverrides): Promise<string>;
+
+    addLiquidity(
+      _tokenA: string,
+      _tokenB: string,
+      _amountADesired: BigNumberish,
+      _amountBDesired: BigNumberish,
+      _amountAMin: BigNumberish,
+      _amountBMin: BigNumberish,
+      _to: string,
+      _deadline: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     createPair(
       _token0: string,
@@ -125,6 +184,18 @@ export interface UniswapAdaptor extends BaseContract {
 
     ROUTER_ADDRESS(overrides?: CallOverrides): Promise<BigNumber>;
 
+    addLiquidity(
+      _tokenA: string,
+      _tokenB: string,
+      _amountADesired: BigNumberish,
+      _amountBDesired: BigNumberish,
+      _amountAMin: BigNumberish,
+      _amountBMin: BigNumberish,
+      _to: string,
+      _deadline: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     createPair(
       _token0: string,
       _token1: string,
@@ -136,6 +207,18 @@ export interface UniswapAdaptor extends BaseContract {
     FACTORY_ADDRESS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     ROUTER_ADDRESS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    addLiquidity(
+      _tokenA: string,
+      _tokenB: string,
+      _amountADesired: BigNumberish,
+      _amountBDesired: BigNumberish,
+      _amountAMin: BigNumberish,
+      _amountBMin: BigNumberish,
+      _to: string,
+      _deadline: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     createPair(
       _token0: string,

@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { IUniswapV2Factory } from "./IUniswapV2Factory";
+export type { IUniswapV2Pair } from "./IUniswapV2Pair";

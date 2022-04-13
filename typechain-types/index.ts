@@ -24,6 +24,8 @@ export type { IERC165 } from "./@openzeppelin/contracts/utils/introspection/IERC
 export { IERC165__factory } from "./factories/@openzeppelin/contracts/utils/introspection/IERC165__factory";
 export type { IUniswapV2Factory } from "./@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory";
 export { IUniswapV2Factory__factory } from "./factories/@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory__factory";
+export type { IUniswapV2Pair } from "./@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair";
+export { IUniswapV2Pair__factory } from "./factories/@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair__factory";
 export type { IUniswapV2Router01 } from "./@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01";
 export { IUniswapV2Router01__factory } from "./factories/@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01__factory";
 export type { IUniswapV2Router02 } from "./@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02";
