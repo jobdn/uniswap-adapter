@@ -1,6 +1,6 @@
 import { task } from "hardhat/config";
 import { config } from "../config";
-import { UniswapAdaptor } from "../typechain-types";
+import { IUniswapV2Factory, UniswapAdaptor } from "../typechain-types";
 
 task("addLiq", "Add liquidity to the pool")
   .addParam("tokenA", "A pool token.")
@@ -15,10 +15,6 @@ task("addLiq", "Add liquidity to the pool")
     "Unix timestamp after which the transaction will revert."
   )
   .setAction(async (taskArgs, hre) => {
-    const adaptor: UniswapAdaptor = (await hre.ethers.getContractAt(
-      "UniswapAdaptor",
-      config.ADAPTOR
-    )) as UniswapAdaptor;
     const {
       tokenA,
       tokenB,
@@ -30,6 +26,15 @@ task("addLiq", "Add liquidity to the pool")
       deadline,
     } = taskArgs;
 
+    const adaptor: UniswapAdaptor = (await hre.ethers.getContractAt(
+      "UniswapAdaptor",
+      config.ADAPTOR
+    )) as UniswapAdaptor;
+    const factory: IUniswapV2Factory = (await hre.ethers.getContractAt(
+      "IUniswapV2Factory",
+      process.env.FACTORY_ADDRESS as string
+    )) as IUniswapV2Factory;
+
     await adaptor.addLiquidity(
       tokenA,
       tokenB,
@@ -39,5 +44,14 @@ task("addLiq", "Add liquidity to the pool")
       amountBMin,
       to,
       deadline
+    );
+    const pair = await factory.getPair(tokenA, tokenB);
+
+    console.log("====== Info: ======");
+    console.log(
+      `${amountADesired} of ${tokenA} tokens was added to the pair(${pair})`
+    );
+    console.log(
+      `${amountBDesired} of ${tokenB} tokens was added to the pair(${pair})`
     );
   });
