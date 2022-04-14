@@ -32,11 +32,11 @@ describe("UniswapAdaptor", () => {
 
   beforeEach(async () => {
     [signer] = await ethers.getSigners();
-    token0 = await new Token__factory(signer).deploy("TOKEN0", "T000", 5);
+    token0 = await new Token__factory(signer).deploy("TOKEN0", "T000", 3);
     await token0.deployed();
-    token1 = await new Token__factory(signer).deploy("TOKEN1", "T111", 5);
+    token1 = await new Token__factory(signer).deploy("TOKEN1", "T111", 3);
     await token1.deployed();
-    token2 = await new Token__factory(signer).deploy("TOKEN2", "T222", 5);
+    token2 = await new Token__factory(signer).deploy("TOKEN2", "T222", 3);
     await token2.deployed();
 
     factory = <IUniswapV2Factory>(
@@ -59,7 +59,7 @@ describe("UniswapAdaptor", () => {
     );
     await adaptor.deployed();
 
-    INITIAL_BALANCE = utils.parseUnits("1000", await token0.decimals());
+    INITIAL_BALANCE = utils.parseUnits("100", await token0.decimals());
     // Mint tokens
     token0.mint(signer.address, INITIAL_BALANCE);
     token1.mint(signer.address, INITIAL_BALANCE.mul(2));
@@ -82,12 +82,12 @@ describe("UniswapAdaptor", () => {
     );
 
     // ! We need to approve the adaptor to debit our tokens
-    await token0.approve(adaptor.address, toEther(100));
-    await token1.approve(adaptor.address, toEther(200));
-    await token2.approve(adaptor.address, toEther(200));
+    await token0.approve(adaptor.address, INITIAL_BALANCE);
+    await token1.approve(adaptor.address, INITIAL_BALANCE);
+    await token2.approve(adaptor.address, INITIAL_BALANCE);
 
     // addLiquidity
-    FIRST_LIQUIDITY = utils.parseUnits("100", await token0.decimals());
+    FIRST_LIQUIDITY = utils.parseUnits("10", await token0.decimals());
     const deadline = (await getCurrentTime()) + 100;
     await adaptor.addLiquidity(
       token0.address,
@@ -117,7 +117,7 @@ describe("UniswapAdaptor", () => {
 
   describe("addLiquidity and removeLiquidity", () => {
     it("should be possible add liquidity to the pair first time time", async () => {
-      // First amount of pool tokens is equal to sqrt(a*b) - MINIMUM_LIQUIDITY
+      // First amount of LP is equal to sqrt(a*b) - MINIMUM_LIQUIDITY
       expect(await pair01.balanceOf(signer.address)).to.eq(
         FIRST_LIQUIDITY.sub(MINIMUM_LIQUIDITY)
       );
@@ -165,13 +165,28 @@ describe("UniswapAdaptor", () => {
 
   describe("swap", () => {
     it("should be possible swap token0 for token1", async () => {
-      console.log(await pair01.getReserves());
-      await adaptor.swap(
+      const price = await adaptor.getPriceFor(
         utils.parseUnits("1", await token0.decimals()),
+        [token1.address, token0.address]
+      );
+      const reservesBefore = await pair01.getReserves();
+
+      await adaptor.swap(
+        price,
         utils.parseUnits("1", await token1.decimals()),
-        [token1.address, token0.address],
+        [token0.address, token1.address],
         signer.address,
         (await getCurrentTime()) + 100
+      );
+      const reservesAfter = await pair01.getReserves();
+
+      const [reserve0, reserve1] =
+        token0.address < token1.address
+          ? [reservesAfter[0], reservesAfter[1]]
+          : [reservesAfter[1], reservesAfter[0]];
+      expect(reserve0).to.eq(reservesBefore[0].add(price));
+      expect(reserve1).to.eq(
+        reservesBefore[1].sub(utils.parseUnits("1", await token0.decimals()))
       );
     });
 
@@ -188,8 +203,8 @@ describe("UniswapAdaptor", () => {
       );
 
       await adaptor.swap(
-        utils.parseUnits("500", await token0.decimals()),
         utils.parseUnits("1", await token0.decimals()),
+        0,
         [token0.address, token1.address, token2.address],
         signer.address,
         (await getCurrentTime()) + 100

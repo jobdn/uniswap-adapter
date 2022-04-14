@@ -110,6 +110,20 @@ contract UniswapAdaptor {
         );
     }
 
+    /// @notice Gives price for `_amountOut` tokens
+    /// @param _amountOut Amount of tokens in pair what you want to give
+    /// @param _path Array of token addresses
+    /// @return price Price for `_amountOut` tokens
+    function getPriceFor(uint256 _amountOut, address[] memory _path)
+        public
+        view
+        returns (uint256 price)
+    {
+        uint256[] memory amounts = IUniswapV2Router02(ROUTER_ADDRESS)
+            .getAmountsIn(_amountOut, _path);
+        price = amounts[0];
+    }
+
     /// @notice Swaps one tokens for other
     /// @dev We need to approve the adaptor and router to trasfer tokens with path[0] address to adaptor and from adaptor to pair.
     /// @param _amountIn The amount of input tokens to send.
