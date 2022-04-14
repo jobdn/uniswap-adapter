@@ -110,6 +110,13 @@ contract UniswapAdaptor {
         );
     }
 
+    /// @notice Swaps one tokens for other
+    /// @dev We need to approve the adaptor and router to trasfer tokens with path[0] address to adaptor and from adaptor to pair.
+    /// @param _amountIn The amount of input tokens to send.
+    /// @param _amountOutMin The minimum amount of output tokens that must be received for the transaction not to revert.
+    /// @param _path An array of token addresses. path.length must be >= 2. Pools for each consecutive pair of addresses must exist and have liquidity.
+    /// @param _to Recipient of the output tokens.
+    /// @param _deadline Unix timestamp after which the transaction will revert.
     function swap(
         uint256 _amountIn,
         uint256 _amountOutMin,
