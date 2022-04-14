@@ -11,13 +11,10 @@ import "hardhat/console.sol";
 
 contract UniswapAdaptor {
     using SafeERC20 for IERC20;
-    address public immutable ROUTER_ADDRESS;
-    address public immutable FACTORY_ADDRESS;
-
-    constructor(address _router, address _factory) {
-        ROUTER_ADDRESS = _router;
-        FACTORY_ADDRESS = _factory;
-    }
+    address public constant ROUTER_ADDRESS =
+        0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
+    address public constant FACTORY_ADDRESS =
+        0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
 
     function createPair(address _token0, address _token1) public {
         IUniswapV2Factory(FACTORY_ADDRESS).createPair(_token0, _token1);

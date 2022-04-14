@@ -2,7 +2,6 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   IUniswapV2Factory,
   IUniswapV2Pair,
-  IUniswapV2Router02,
   Token,
   Token__factory,
   UniswapAdaptor,
@@ -24,9 +23,7 @@ describe("UniswapAdaptor", () => {
   let signer: SignerWithAddress;
   let trader: SignerWithAddress;
   let factory: IUniswapV2Factory;
-  let router: IUniswapV2Router02;
   let pair01: IUniswapV2Pair;
-  let pair12: IUniswapV2Pair;
   let INITIAL_BALANCE: BigNumber;
   let FIRST_LIQUIDITY: BigNumber;
 
@@ -46,17 +43,7 @@ describe("UniswapAdaptor", () => {
       )
     );
 
-    router = <IUniswapV2Router02>(
-      await ethers.getContractAt(
-        "IUniswapV2Router02",
-        <string>process.env.ROUTER_ADDRESS
-      )
-    );
-
-    adaptor = await new UniswapAdaptor__factory(signer).deploy(
-      router.address,
-      factory.address
-    );
+    adaptor = await new UniswapAdaptor__factory(signer).deploy();
     await adaptor.deployed();
 
     INITIAL_BALANCE = utils.parseUnits("100", await token0.decimals());
@@ -73,12 +60,6 @@ describe("UniswapAdaptor", () => {
       await ethers.getContractAt(
         "IUniswapV2Pair",
         await factory.getPair(token0.address, token1.address)
-      )
-    );
-    pair12 = <IUniswapV2Pair>(
-      await ethers.getContractAt(
-        "IUniswapV2Pair",
-        await factory.getPair(token1.address, token2.address)
       )
     );
 
@@ -100,13 +81,6 @@ describe("UniswapAdaptor", () => {
       signer.address,
       deadline
     );
-  });
-
-  describe("deploy", () => {
-    it("should be set correct address of factory and router", async () => {
-      expect(await adaptor.FACTORY_ADDRESS()).to.eq(factory.address);
-      expect(await adaptor.ROUTER_ADDRESS()).to.eq(router.address);
-    });
   });
 
   describe("createPair", () => {
