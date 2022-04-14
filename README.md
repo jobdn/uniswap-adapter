@@ -11,3 +11,5 @@ Before removing liquidity, you need to allow the `UniswapAdaptor` to send lp-tok
 Call `approve(address of adaptor, amount of tokens)` method of the pair contract.
 
 ## Swap
+
+Before swap, you need approve the `UniswapAdaptor` to send tokens for sale.
