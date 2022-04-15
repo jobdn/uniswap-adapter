@@ -67,6 +67,15 @@ contract UniswapAdaptor {
             _to,
             _deadline
         );
+
+        IERC20(_tokenA).safeTransfer(
+            msg.sender,
+            IERC20(_tokenA).balanceOf(address(this))
+        );
+        IERC20(_tokenB).safeTransfer(
+            msg.sender,
+            IERC20(_tokenB).balanceOf(address(this))
+        );
     }
 
     /// @notice Removes liquidity from the pool

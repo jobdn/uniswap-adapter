@@ -17,6 +17,7 @@ task("createPair", "Create pair")
     const { tokenA, tokenB } = taskArgs;
 
     await adaptor.createPair(tokenA, tokenB);
+
     console.log("====== Info: ======");
     console.log("Pair was created at: ", await factory.getPair(tokenA, tokenB));
   });

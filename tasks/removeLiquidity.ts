@@ -1,6 +1,6 @@
 import { task } from "hardhat/config";
 import { config } from "../config";
-import { IUniswapV2Factory, UniswapAdaptor } from "../typechain-types";
+import { UniswapAdaptor } from "../typechain-types";
 
 task("removeLiq", "Remove liquidity from the pool")
   .addParam("tokenA", "A pool token.")
@@ -21,7 +21,7 @@ task("removeLiq", "Remove liquidity from the pool")
     const { tokenA, tokenB, liquidity, amountAMin, amountBMin, to, deadline } =
       taskArgs;
 
-    await adaptor.removeLiquidity(
+    const tx = await adaptor.removeLiquidity(
       tokenA,
       tokenB,
       liquidity,
@@ -31,12 +31,6 @@ task("removeLiq", "Remove liquidity from the pool")
       deadline
     );
 
-    const factory: IUniswapV2Factory = (await hre.ethers.getContractAt(
-      "IUniswapV2Factory",
-      process.env.FACTORY_ADDRESS as string
-    )) as IUniswapV2Factory;
-    const pair = await factory.getPair(tokenA, tokenB);
-
     console.log("====== Info: ======");
-    console.log(`${liquidity} liquidity removed from pair(${pair})`);
+    console.log(`Check transaction: ${tx.hash}`);
   });
