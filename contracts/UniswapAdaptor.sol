@@ -9,16 +9,19 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract UniswapAdaptor {
     using SafeERC20 for IERC20;
-    address public constant ROUTER_ADDRESS =
-        0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
-    address public constant FACTORY_ADDRESS =
-        0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
+    address public immutable router;
+    address public immutable factory;
 
-    function createPair(address _token0, address _token1) public {
-        IUniswapV2Factory(FACTORY_ADDRESS).createPair(_token0, _token1);
+    constructor(address _router, address _factory) {
+        router = _router;
+        factory = _factory;
     }
 
-    /// @notice Transfers tokens to adaptor contract and approves tokens for ROUTER_ADDRESS to add liquidity
+    function createPair(address _token0, address _token1) public {
+        IUniswapV2Factory(factory).createPair(_token0, _token1);
+    }
+
+    /// @notice Transfers tokens to adaptor contract and approves tokens for router to add liquidity
     /// @param _tokenAddress One of the two tokens in pair
     /// @param _tokenAmount Amount of tokens wich will be deposited ot pair
     function _prepareForAddLiquidity(
@@ -31,7 +34,7 @@ contract UniswapAdaptor {
             _tokenAmount
         );
 
-        IERC20(_tokenAddress).approve(ROUTER_ADDRESS, _tokenAmount);
+        IERC20(_tokenAddress).approve(router, _tokenAmount);
     }
 
     /// @notice Adds liquidity to the pool
@@ -57,7 +60,7 @@ contract UniswapAdaptor {
         _prepareForAddLiquidity(_tokenA, _amountADesired);
         _prepareForAddLiquidity(_tokenB, _amountBDesired);
 
-        IUniswapV2Router02(ROUTER_ADDRESS).addLiquidity(
+        IUniswapV2Router02(router).addLiquidity(
             _tokenA,
             _tokenB,
             _amountADesired,
@@ -96,14 +99,11 @@ contract UniswapAdaptor {
         address _to,
         uint256 _deadline
     ) public {
-        address pair = IUniswapV2Factory(FACTORY_ADDRESS).getPair(
-            _tokenA,
-            _tokenB
-        );
+        address pair = IUniswapV2Factory(factory).getPair(_tokenA, _tokenB);
         require(pair != address(0), "Adaptor: nonexistent pair");
-        IERC20(pair).approve(ROUTER_ADDRESS, _liquidity);
+        IERC20(pair).approve(router, _liquidity);
         IERC20(pair).safeTransferFrom(msg.sender, address(this), _liquidity);
-        IUniswapV2Router02(ROUTER_ADDRESS).removeLiquidity(
+        IUniswapV2Router02(router).removeLiquidity(
             _tokenA,
             _tokenB,
             _liquidity,
@@ -123,8 +123,10 @@ contract UniswapAdaptor {
         view
         returns (uint256 price)
     {
-        uint256[] memory amounts = IUniswapV2Router02(ROUTER_ADDRESS)
-            .getAmountsIn(_amountOut, _path);
+        uint256[] memory amounts = IUniswapV2Router02(router).getAmountsIn(
+            _amountOut,
+            _path
+        );
         price = amounts[0];
     }
 
@@ -143,8 +145,8 @@ contract UniswapAdaptor {
         uint256 _deadline
     ) public {
         IERC20(_path[0]).safeTransferFrom(msg.sender, address(this), _amountIn);
-        IERC20(_path[0]).approve(ROUTER_ADDRESS, _amountIn);
-        IUniswapV2Router02(ROUTER_ADDRESS).swapExactTokensForTokens(
+        IERC20(_path[0]).approve(router, _amountIn);
+        IUniswapV2Router02(router).swapExactTokensForTokens(
             _amountIn,
             _amountOutMin,
             _path,

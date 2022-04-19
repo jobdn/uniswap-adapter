@@ -23,7 +23,7 @@ Before swap, you need approve the `UniswapAdaptor` to send tokens for sale.
 When you use the swap task you need to pass `path` arg as a like array string **ELEMENTS ARE SEPARATED BY A COMMA, WITHOU SPACE**
 
 ```shell
-    "[first_address,second_address]"
+"[first_address,second_address]"
 ```
 
 ## Check price for swap

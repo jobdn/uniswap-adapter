@@ -43,7 +43,11 @@ describe("UniswapAdaptor", () => {
       )
     );
 
-    adaptor = await new UniswapAdaptor__factory(signer).deploy();
+    adaptor = await new UniswapAdaptor__factory(signer).deploy(
+      process.env.ROUTER_ADDRESS as string,
+      factory.address
+    );
+
     await adaptor.deployed();
 
     INITIAL_BALANCE = utils.parseUnits("100", await token0.decimals());

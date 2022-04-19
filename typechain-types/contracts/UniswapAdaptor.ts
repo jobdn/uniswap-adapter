@@ -24,34 +24,26 @@ import type {
 
 export interface UniswapAdaptorInterface extends utils.Interface {
   functions: {
-    "FACTORY_ADDRESS()": FunctionFragment;
-    "ROUTER_ADDRESS()": FunctionFragment;
     "addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)": FunctionFragment;
     "createPair(address,address)": FunctionFragment;
+    "factory()": FunctionFragment;
     "getPriceFor(uint256,address[])": FunctionFragment;
     "removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)": FunctionFragment;
+    "router()": FunctionFragment;
     "swap(uint256,uint256,address[],address,uint256)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "FACTORY_ADDRESS"
-      | "ROUTER_ADDRESS"
       | "addLiquidity"
       | "createPair"
+      | "factory"
       | "getPriceFor"
       | "removeLiquidity"
+      | "router"
       | "swap"
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "FACTORY_ADDRESS",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "ROUTER_ADDRESS",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "addLiquidity",
     values: [
@@ -69,6 +61,7 @@ export interface UniswapAdaptorInterface extends utils.Interface {
     functionFragment: "createPair",
     values: [string, string]
   ): string;
+  encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getPriceFor",
     values: [BigNumberish, string[]]
@@ -85,24 +78,18 @@ export interface UniswapAdaptorInterface extends utils.Interface {
       BigNumberish
     ]
   ): string;
+  encodeFunctionData(functionFragment: "router", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "swap",
     values: [BigNumberish, BigNumberish, string[], string, BigNumberish]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "FACTORY_ADDRESS",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "ROUTER_ADDRESS",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "addLiquidity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "createPair", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getPriceFor",
     data: BytesLike
@@ -111,6 +98,7 @@ export interface UniswapAdaptorInterface extends utils.Interface {
     functionFragment: "removeLiquidity",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "router", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "swap", data: BytesLike): Result;
 
   events: {};
@@ -143,10 +131,6 @@ export interface UniswapAdaptor extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    FACTORY_ADDRESS(overrides?: CallOverrides): Promise<[string]>;
-
-    ROUTER_ADDRESS(overrides?: CallOverrides): Promise<[string]>;
-
     addLiquidity(
       _tokenA: string,
       _tokenB: string,
@@ -165,6 +149,8 @@ export interface UniswapAdaptor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    factory(overrides?: CallOverrides): Promise<[string]>;
+
     getPriceFor(
       _amountOut: BigNumberish,
       _path: string[],
@@ -182,6 +168,8 @@ export interface UniswapAdaptor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    router(overrides?: CallOverrides): Promise<[string]>;
+
     swap(
       _amountIn: BigNumberish,
       _amountOutMin: BigNumberish,
@@ -191,10 +179,6 @@ export interface UniswapAdaptor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
-
-  FACTORY_ADDRESS(overrides?: CallOverrides): Promise<string>;
-
-  ROUTER_ADDRESS(overrides?: CallOverrides): Promise<string>;
 
   addLiquidity(
     _tokenA: string,
@@ -214,6 +198,8 @@ export interface UniswapAdaptor extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  factory(overrides?: CallOverrides): Promise<string>;
+
   getPriceFor(
     _amountOut: BigNumberish,
     _path: string[],
@@ -231,6 +217,8 @@ export interface UniswapAdaptor extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  router(overrides?: CallOverrides): Promise<string>;
+
   swap(
     _amountIn: BigNumberish,
     _amountOutMin: BigNumberish,
@@ -241,10 +229,6 @@ export interface UniswapAdaptor extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    FACTORY_ADDRESS(overrides?: CallOverrides): Promise<string>;
-
-    ROUTER_ADDRESS(overrides?: CallOverrides): Promise<string>;
-
     addLiquidity(
       _tokenA: string,
       _tokenB: string,
@@ -263,6 +247,8 @@ export interface UniswapAdaptor extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    factory(overrides?: CallOverrides): Promise<string>;
+
     getPriceFor(
       _amountOut: BigNumberish,
       _path: string[],
@@ -279,6 +265,8 @@ export interface UniswapAdaptor extends BaseContract {
       _deadline: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    router(overrides?: CallOverrides): Promise<string>;
 
     swap(
       _amountIn: BigNumberish,
@@ -293,10 +281,6 @@ export interface UniswapAdaptor extends BaseContract {
   filters: {};
 
   estimateGas: {
-    FACTORY_ADDRESS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ROUTER_ADDRESS(overrides?: CallOverrides): Promise<BigNumber>;
-
     addLiquidity(
       _tokenA: string,
       _tokenB: string,
@@ -315,6 +299,8 @@ export interface UniswapAdaptor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    factory(overrides?: CallOverrides): Promise<BigNumber>;
+
     getPriceFor(
       _amountOut: BigNumberish,
       _path: string[],
@@ -331,6 +317,8 @@ export interface UniswapAdaptor extends BaseContract {
       _deadline: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    router(overrides?: CallOverrides): Promise<BigNumber>;
 
     swap(
       _amountIn: BigNumberish,
@@ -343,10 +331,6 @@ export interface UniswapAdaptor extends BaseContract {
   };
 
   populateTransaction: {
-    FACTORY_ADDRESS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    ROUTER_ADDRESS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     addLiquidity(
       _tokenA: string,
       _tokenB: string,
@@ -365,6 +349,8 @@ export interface UniswapAdaptor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getPriceFor(
       _amountOut: BigNumberish,
       _path: string[],
@@ -381,6 +367,8 @@ export interface UniswapAdaptor extends BaseContract {
       _deadline: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    router(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     swap(
       _amountIn: BigNumberish,
